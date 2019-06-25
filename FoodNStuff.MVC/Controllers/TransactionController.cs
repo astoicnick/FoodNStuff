@@ -17,8 +17,8 @@ namespace FoodNStuff.MVC.Controllers
         //GET: Transaction/Create
         public ActionResult Create()
         {
-            ViewBag.Product = new SelectList(_db.Products,"ProductId","Name");
-            ViewBag.Customer = new SelectList(_db.Customers,"CustomerId","FullName");
+            ViewBag.CustomerId = new SelectList(_db.Customers.ToList(), "CustomerId", "FullName");
+            ViewBag.ProductId = new SelectList(_db.Products.ToList(),"ProductId","Name");
             return View();
         }
 
@@ -28,7 +28,6 @@ namespace FoodNStuff.MVC.Controllers
         [ActionName("Create")]
         public ActionResult Create(Transaction transactionToCreate)
         {
-
             if (ModelState.IsValid)
             {
                 _db.Transactions.Add(transactionToCreate);
@@ -42,7 +41,8 @@ namespace FoodNStuff.MVC.Controllers
         // GET: Transaction
         public ActionResult Index()
         {
-            return View(_db.Transactions.ToList());
+            var transactionList = _db.Transactions.OrderBy(t=>t.Customer.LastName).ThenBy(t=>t.Customer.FirstName).ToList();
+            return View(transactionList);
         }
 
         //Read Detailed
@@ -65,6 +65,8 @@ namespace FoodNStuff.MVC.Controllers
         //GET: Transaction/Update/{id}
         public ActionResult Update(long? id)
         {
+            ViewBag.CustomerId = new SelectList(_db.Customers.ToList(), "CustomerId", "FullName");
+            ViewBag.ProductId = new SelectList(_db.Products.ToList(), "ProductId", "Name");
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
