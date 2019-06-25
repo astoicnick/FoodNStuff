@@ -11,7 +11,6 @@ namespace FoodNStuff.MVC.Models
     {
         [Key]
         public int TransactionId { get; set; }
-
         [ForeignKey("Customer")]
         public int CustomerId { get; set; }
         public virtual Customer Customer { get; set; }
